@@ -8,6 +8,14 @@ XML_TEMPLATE = (
     "</request>"
 )
 
+XML_NET_MODE = (
+    '<?xml version="1.0" encoding="UTF-8"?>'
+    "<request>"
+    "<NetworkMode>{}</NetworkMode>"
+    "<NetworkBand>3FFFFFFF</NetworkBand>"
+    "<LTEBand>7FFFFFFFFFFFFFFF</LTEBand>"
+    "</request>"
+)
 
 def connect_mobile(ctx):
     # type: (huaweisms.api.common.ApiCtx) -> ...
@@ -49,4 +57,19 @@ def switch_mobile_on(ctx):
         "__RequestVerificationToken": ctx.token,
     }
     url = "{}/dialup/mobile-dataswitch".format(ctx.api_base_url)
+    return huaweisms.api.common.post_to_url(url, data, ctx, additional_headers=headers)
+
+def set_network_mode(ctx, net):
+    """ net value 
+    00 AUTO
+    01 EDGE
+    02 WCDMA
+    03 LTE
+    """
+    data = XML_NET_MODE.format(net)
+    headers = {
+        "__RequestVerificationToken": ctx.token,
+    }
+
+    url = "{}/net/net-mode".format(ctx.api_base_url)
     return huaweisms.api.common.post_to_url(url, data, ctx, additional_headers=headers)
